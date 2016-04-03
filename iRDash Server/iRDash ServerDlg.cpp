@@ -421,8 +421,8 @@ UINT Dash_Thread(LPVOID pParam)
 					WriteFile(DashData.PortHandle, &LiveDataHeader[2], 1, &length, NULL);
 
 					// Now we can send the data block
-					//temp_char = (char)LiveData.EngineWarnings;
-					//WriteFile(DashData.PortHandle, &temp_char, 1, &length, NULL);
+					temp_char = (char)LiveData.EngineWarnings;	// Enginewarnings actually use only one byte even if it is stored as an integer
+					WriteFile(DashData.PortHandle, &temp_char, 1, &length, NULL);
 					WriteFile(DashData.PortHandle, &LiveData.FuelLevel, 4, &length, NULL);
 					temp_char = (char)LiveData.Gear;
 					WriteFile(DashData.PortHandle, &temp_char, 1, &length, NULL);
