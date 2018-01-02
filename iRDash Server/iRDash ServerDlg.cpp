@@ -421,12 +421,13 @@ UINT Dash_Thread(LPVOID pParam)
 					WriteFile(DashData.PortHandle, &LiveDataHeader[2], 1, &length, NULL);
 
 					// Now we can send the data block
-					temp_char = (char)LiveData.EngineWarnings;	// EngineWarnings actually use only one byte even if it is stored as an integer
+					temp_char = (char)LiveData.EngineWarnings;	// EngineWarnings actually use only one byte even if it is stored as a four byte integer
 					WriteFile(DashData.PortHandle, &temp_char, 1, &length, NULL);
-					WriteFile(DashData.PortHandle, &LiveData.FuelLevel, 4, &length, NULL);
 					temp_char = (char)LiveData.Gear;			// Usually there is no more than 256 gears in a car, so a byte is enough
 					WriteFile(DashData.PortHandle, &temp_char, 1, &length, NULL);
+					WriteFile(DashData.PortHandle, &LiveData.IsInGarage, 1, &length, NULL);
 					WriteFile(DashData.PortHandle, &LiveData.IsOnTrack, 1, &length, NULL);
+					WriteFile(DashData.PortHandle, &LiveData.FuelLevel, 4, &length, NULL);
 					WriteFile(DashData.PortHandle, &LiveData.RPM, 4, &length, NULL);
 					WriteFile(DashData.PortHandle, &LiveData.Speed, 4, &length, NULL);
 					WriteFile(DashData.PortHandle, &LiveData.WaterTemp, 4, &length, NULL);
