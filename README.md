@@ -21,7 +21,9 @@ Ardunio projects to display the transmitted data on a TFT display:
 - Display resolution: 800x480
 - Graphics library: LVGL
 
-To compile the solution you need to download the iRacing SDK from iRacing's forum and place it in the "irsdk" folder next to the folder where you downloaded "iRDash server".
+## Building
+You need Visual Studio 2022.
+You need to download the iRacing SDK from iRacing's forum and place it in the "irsdk" folder next to the folder where you downloaded "iRDash server".
 
 ## Usage
 - Enter manually the COM port number at "Dash port number" and click connect
