@@ -3,17 +3,20 @@ Connects to a running iRacing simulation and sends its telemetry data via USB to
 Currently only the car's telemetry data is sent, the slow moving data (lap times, other cars, etc.) is not.
 
 Ardunio projects to display the transmitted data on a TFT display:
-https://github.com/UmmonPwr/iRDash_Client
+## iRDash Client v1
+- https://github.com/UmmonPwr/iRDash_Client
 - MCU: ATMEGA2560
 - Display resolution: 320x240
 - Graphics library: UTFT
 
-https://github.com/UmmonPwr/iRDash_Client_v2
+## iRDash Client v2
+- https://github.com/UmmonPwr/iRDash_Client_v2
 - MCU: ESP32
 - Display resolution: 320x240
 - Graphics library: Arduino_GFX
 
-https://github.com/UmmonPwr/iRDash_Client_v3
+## iRDash Client v3
+- https://github.com/UmmonPwr/iRDash_Client_v3
 - MCU: ESP32S3
 - Display resolution: 800x480
 - Graphics library: LVGL
@@ -27,4 +30,4 @@ To compile the solution you need to download the iRacing SDK from iRacing's foru
 - Available COM ports window is showing the actually available COM ports, list is updated when "Rescan" is clicked
 
 ## Screenshot:
-<img src="images/screenshot.jpg">
+<img src="images/screenshot.png">
