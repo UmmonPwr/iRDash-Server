@@ -33,6 +33,7 @@
 
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 
+#include <winbase.h>			// for GetCommPorts()
 
 // for iRacing SDK
 #include "irsdk_defines.h"

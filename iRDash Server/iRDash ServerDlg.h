@@ -92,33 +92,34 @@ const char iRLiveDataNames[][20] ={
 };
 
 // ID numbers of iRacing live variables in the internal data structure
-#define IDBrake				0
-#define IDClutch			1
-#define IDDriverCarSLBlinkRPM 2
-#define IDEngineWarnings	3
-#define IDFuelLevel			4
-#define IDFuelPress			5
-#define IDGear				6
-#define IDIsInGarage		7
-#define IDIsOnTrack			8
-#define IDManifoldPress		9
-#define IDOilLevel			10
-#define IDOilPress			11
-#define IDOilTemp			12
-#define IDRPM				13
-#define IDShiftGrindRPM		14
-#define IDSessionFlags		15
-#define IDShiftIndicatorPct	16
-#define IDSpeed				17
-#define IDThrottle			18
-#define IDVoltage			19
-#define IDWaterLevel		20
-#define IDWaterTemp			21
+#define IDBrake					0
+#define IDClutch				1
+#define IDDriverCarSLBlinkRPM	2
+#define IDEngineWarnings		3
+#define IDFuelLevel				4
+#define IDFuelPress				5
+#define IDGear					6
+#define IDIsInGarage			7
+#define IDIsOnTrack				8
+#define IDManifoldPress			9
+#define IDOilLevel				10
+#define IDOilPress				11
+#define IDOilTemp				12
+#define IDRPM					13
+#define IDShiftGrindRPM			14
+#define IDSessionFlags			15
+#define IDShiftIndicatorPct		16
+#define IDSpeed					17
+#define IDThrottle				18
+#define IDVoltage				19
+#define IDWaterLevel			20
+#define IDWaterTemp				21
 
-#define DEFAULTPORT 4	// use this port number if no registry setting is existing
-#define ERROR_NO 0
-#define ERROR_SETTINGS_READ 1
-#define ERROR_SETTINGS_WRITE 2
+#define DEFAULTPORT				4	// use this port number if no registry setting is existing
+#define MAXNUMOFCOMPORTS		32	// array size for COM ports
+#define ERROR_NO				0
+#define ERROR_SETTINGS_READ		1
+#define ERROR_SETTINGS_WRITE	2
 
 // CiRDashServerDlg dialog
 class CiRDashServerDlg : public CDialogEx
@@ -147,9 +148,12 @@ public:
 	afx_msg void OnClickedAbout();
 	afx_msg void OnClickedConnect();
 	afx_msg void OnEnChangePortnumber();
+	afx_msg void OnClickedRescan();
+	afx_msg void OnClickedAvailablePorts();
 	int ReadSetting();
 	int WriteSetting();
-	CEdit Port;	// Port number edit control handler
+	CEdit Port;					// Port number edit control handler
+	CListBox AvailablePorts;	// ListBox of available COM ports
 	void ShowConnect();
 	void ShowDisconnect();
 };

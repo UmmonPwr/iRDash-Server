@@ -58,6 +58,7 @@ void CiRDashServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PORTNUMBER, Port);
+	DDX_Control(pDX, IDC_AVAILABLEPORTS, AvailablePorts);
 }
 
 BEGIN_MESSAGE_MAP(CiRDashServerDlg, CDialogEx)
@@ -67,6 +68,8 @@ BEGIN_MESSAGE_MAP(CiRDashServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_ABOUT, &CiRDashServerDlg::OnClickedAbout)
 	ON_BN_CLICKED(IDC_CONNECT, &CiRDashServerDlg::OnClickedConnect)
 	ON_EN_CHANGE(IDC_PORTNUMBER, &CiRDashServerDlg::OnEnChangePortnumber)
+	ON_BN_CLICKED(IDC_RESCAN, &CiRDashServerDlg::OnClickedRescan)
+	ON_BN_CLICKED(IDC_AVAILABLEPORTS, &CiRDashServerDlg::OnClickedAvailablePorts)
 END_MESSAGE_MAP()
 
 // CiRDashServerDlg message handlers
@@ -75,13 +78,12 @@ BOOL CiRDashServerDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// Add "About..." menu item to system menu.
-
 	// IDM_ABOUTBOX must be in the system command range.
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
-	if (pSysMenu != NULL)
+	if (pSysMenu != nullptr)
 	{
 		BOOL bNameValid;
 		CString strAboutMenu;
@@ -95,15 +97,54 @@ BOOL CiRDashServerDlg::OnInitDialog()
 	}
 
 	// Set the icon for this dialog.  The framework does this automatically when the application's main window is not a dialog
-	SetIcon(m_hIcon, TRUE);			// Set big icon
+	//SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	// TODO: Add extra initialization here
 	// Initialize Dashboard data structure
 	DashData.ThreadIsRunning = false;
 	DashData.RequestThreadShutdown = false;
 	Port.LimitText(3);	// Limit the length of the port number edit control to 3 character
 	ReadSetting();		// Read port number from registry and set up the editbox
+
+	// fill up a listbox with the number of available COM ports
+	// https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getcommports
+	// https://learn.microsoft.com/en-us/answers/questions/1398207/better-solution-to-retrieve-serial-com-ports-and-f
+	ULONG portnumbers[MAXNUMOFCOMPORTS];
+	ULONG portnumberscount = MAXNUMOFCOMPORTS;
+	ULONG portnumbersfound;
+	ULONG result;
+	CString porttoadd;
+
+	result = GetCommPorts(&portnumbers[0], portnumberscount, &portnumbersfound);
+
+	// https://learn.microsoft.com/en-us/windows/win32/controls/create-a-simple-list-box
+	// https://learn.microsoft.com/en-us/cpp/mfc/reference/clistbox-class?view=msvc-170
+
+	switch (result)
+	{
+		case ERROR_SUCCESS:
+			// The call succeeded. The lpPortNumbers array was large enough for the result.
+			if (portnumbersfound > 0)
+			{
+				for (int i = 0; i < portnumbersfound; i++)
+				{
+					porttoadd.Format(L"%d", portnumbers[i]);
+					AvailablePorts.AddString(porttoadd);
+				}
+			}
+			else AvailablePorts.AddString(L"No COM ports");
+			break;
+
+		case ERROR_MORE_DATA:
+			// The lpPortNumbers array was too small to contain all available port numbers.
+			AvailablePorts.AddString(L"Too many COM ports");
+			break;
+
+		case ERROR_FILE_NOT_FOUND:
+			// There are no comm ports available.
+			AvailablePorts.AddString(L"No COM ports");
+			break;
+	}
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -230,7 +271,7 @@ void CiRDashServerDlg::OnClickedConnect()
 		ShowDisconnect();
 		DashData.ThreadIsRunning = true;
 		DashData.PortHandle = PortHandle;
-		AfxBeginThread(Dash_Thread, NULL);
+		AfxBeginThread(Dash_Thread, nullptr);
 	}
 	else
 	{
@@ -301,6 +342,51 @@ int CiRDashServerDlg::ReadSetting()
 	return ERROR_NO;
 }
 
+// Update the available COM ports list
+void CiRDashServerDlg::OnClickedRescan()
+{
+	ULONG portnumbers[MAXNUMOFCOMPORTS];
+	ULONG portnumberscount = MAXNUMOFCOMPORTS;
+	ULONG portnumbersfound;
+	ULONG result;
+	CString porttoadd;
+
+	AvailablePorts.ResetContent(); // Clear all data from the listbox and start with a blank
+	result = GetCommPorts(&portnumbers[0], portnumberscount, &portnumbersfound);
+
+	switch (result)
+	{
+	case ERROR_SUCCESS:
+		// The call succeeded. The lpPortNumbers array was large enough for the result.
+		if (portnumbersfound > 0)
+		{
+			for (int i = 0; i < portnumbersfound; i++)
+			{
+				porttoadd.Format(L"%d", portnumbers[i]);
+				AvailablePorts.AddString(porttoadd);
+			}
+		}
+		else AvailablePorts.AddString(L"No COM ports");
+		break;
+
+	case ERROR_MORE_DATA:
+		// The lpPortNumbers array was too small to contain all available port numbers.
+		AvailablePorts.AddString(L"Too many COM ports");
+		break;
+
+	case ERROR_FILE_NOT_FOUND:
+		// There are no comm ports available.
+		AvailablePorts.AddString(L"No COM ports");
+		break;
+	}
+}
+
+void CiRDashServerDlg::OnClickedAvailablePorts()
+{
+	// TODO: update port number based on selection
+	if (DashData.ThreadIsRunning == false)
+	{ }
+}
 
 void CiRDashServerDlg::OnEnChangePortnumber()
 {
@@ -457,6 +543,5 @@ UINT Dash_Thread(LPVOID pParam)
 
 void CAboutDlg::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
 	CDialogEx::OnOK();
 }
