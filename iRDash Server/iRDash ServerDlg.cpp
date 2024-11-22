@@ -69,7 +69,7 @@ BEGIN_MESSAGE_MAP(CiRDashServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CONNECT, &CiRDashServerDlg::OnClickedConnect)
 	ON_EN_CHANGE(IDC_PORTNUMBER, &CiRDashServerDlg::OnEnChangePortnumber)
 	ON_BN_CLICKED(IDC_RESCAN, &CiRDashServerDlg::OnClickedRescan)
-	ON_BN_CLICKED(IDC_AVAILABLEPORTS, &CiRDashServerDlg::OnClickedAvailablePorts)
+	ON_LBN_DBLCLK(IDC_AVAILABLEPORTS, &CiRDashServerDlg::OnClickedAvailablePorts)
 END_MESSAGE_MAP()
 
 // CiRDashServerDlg message handlers
@@ -381,11 +381,23 @@ void CiRDashServerDlg::OnClickedRescan()
 	}
 }
 
+// double clicked on an item on the list
 void CiRDashServerDlg::OnClickedAvailablePorts()
 {
-	// TODO: update port number based on selection
+	int selecteditem;
+	CString selectedtext;
+
+	// change the port number only when the dash thread is not running
 	if (DashData.ThreadIsRunning == false)
-	{ }
+	{ 
+		// get the CString of the selected item
+		selecteditem = AvailablePorts.GetCurSel();
+		AvailablePorts.GetText(selecteditem, selectedtext);
+		
+		// try to convert the selected CString to int and check if it was successful
+		selecteditem = _ttoi(selectedtext);
+		if (selecteditem != 0) Port.SetWindowTextW(selectedtext);
+	}
 }
 
 void CiRDashServerDlg::OnEnChangePortnumber()
