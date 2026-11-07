@@ -258,6 +258,15 @@ void CiRDashServerDlg::OnClickedConnect()
 		PortConfig.ByteSize = 8;			//  data size, xmit and rcv
 		PortConfig.Parity = NOPARITY;		//  parity bit
 		PortConfig.StopBits = ONESTOPBIT;	//  stop bit
+		
+		// These settings are to prevent esp32p4 to reset itself when disconnect button is pressed
+		PortConfig.fDtrControl = DTR_CONTROL_DISABLE;     // keep DTR low
+		PortConfig.fRtsControl = RTS_CONTROL_DISABLE;     // keep RTS low
+		PortConfig.fOutxCtsFlow = FALSE;
+		PortConfig.fOutxDsrFlow = FALSE;
+		PortConfig.fOutX = FALSE;
+		PortConfig.fInX = FALSE;
+		
 		SetCommState(PortHandle, &PortConfig);
 
 		comTimeOut.ReadIntervalTimeout = 3;			// Specify time-out between character for receiving.
