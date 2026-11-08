@@ -21,8 +21,14 @@ Ardunio projects to display the transmitted data on a TFT display:
 - Display resolution: 800x480
 - Graphics library: LVGL
 
+## iRDash Client v4
+- https://github.com/UmmonPwr/iRDash_Client_v4
+- MCU: ESP32P4
+- Display resolution: 800x480
+- Graphics library: LVGL
+
 ## Building
-You need Visual Studio 2022.
+You need Visual Studio 2022 or above.
 You need to download the iRacing SDK from iRacing's forum and place it in the "irsdk" folder next to the folder where you downloaded "iRDash server".
 
 ## Usage
